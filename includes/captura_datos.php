@@ -1,9 +1,20 @@
 <?php
 
     require_once('login.php');
-
+    
+    $nombre = "";
+    $minimo = "";
+    $recomendado = "";
+    $beneficios = "";
+    $alimentos= "";
+     $notas= "";
+    
     function vitaminer_captura_datos() {
-        if($_POST['vitaminer_hidden'] == 'Y') {
+ 
+    global $nombre, $minimo, $recomendado;
+    global $beneficios, $alimentos, $notas;
+
+       if($_POST['vitaminer_hidden'] == 'Y') {
             $resultado = comprueba_datos();
             if ($resultado === true) {
                 print('Correcto');
@@ -11,9 +22,9 @@
             } else {
                 vitaminer_pide_datos($resultado);
             }
-        } else {
-            vitaminer_pide_datos();
-        }
+         } else {
+             vitaminer_pide_datos();
+         }
     }
 
     function vitaminer_pide_datos($msge = "") {
