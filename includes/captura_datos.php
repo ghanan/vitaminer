@@ -28,7 +28,7 @@
         print('Beneficios: <input type="text" name="beneficios" size="80"><br />');
         print('Alimentos: <input type="text" name="alimentos" size="80"><br />');
         print('Notas: <input type="text" name="notas" size="80"><br />');
-        print('<input type="submit" value="Grabar" style="color: #ff0000">');
+        print('<input type="submit" value="Grabar" style="color:#ff0000">');
         print('</form>');
         print('</div>');
     }
