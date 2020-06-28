@@ -1,20 +1,20 @@
 <?php
 
     require_once('login.php');
-    
+
     $nombre = "";
     $minimo = "";
     $recomendado = "";
     $beneficios = "";
     $alimentos= "";
-     $notas= "";
-    
-    function vitaminer_captura_datos() {
- 
-    global $nombre, $minimo, $recomendado;
-    global $beneficios, $alimentos, $notas;
+    $notas= "";
 
-       if($_POST['vitaminer_hidden'] == 'Y') {
+    function vitaminer_captura_datos() {
+
+        global $nombre, $minimo, $recomendado;
+        global $beneficios, $alimentos, $notas;
+
+        if($_POST['vitaminer_hidden'] == 'Y') {
             $resultado = comprueba_datos();
             if ($resultado === true) {
                 print('Correcto');
@@ -22,12 +22,16 @@
             } else {
                 vitaminer_pide_datos($resultado);
             }
-         } else {
-             vitaminer_pide_datos();
-         }
+        } else {
+            vitaminer_pide_datos();
+        }
     }
 
     function vitaminer_pide_datos($msge = "") {
+
+        global $nombre, $minimo, $recomendado;
+        global $beneficios, $alimentos, $notas;
+
         print("<div class='wrap'>");
         print($msge);
         print('<h2>Introducción de datos de vitaminas y minerales</h2>');
