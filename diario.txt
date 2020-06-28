@@ -1,0 +1,25 @@
+Creo la tabla con la utilidad de bases de datos del cpane
+la bd se llama pacus_6818312_vitaminer
+la tabla se llama elemento
+Campos:
+nombre 20
+minimo 20
+recomendado 20
+beneficios 80
+alimentos 80
+notas 80
+
+comprobar datos
+    que no deja en blanco
+    que no existe
+
+Buscar el ejemplo que tenía el <span> para avisar de campo vacío
+si existe, volver a enviar el formulario relleno
+   al final el mensaje de repetido y pregunta si cancelar o machacar
+   dos seleccionables para que elija cancelar o machacar
+
+Acabar de insertar con mysqli y después comentarlo todo y hacerlo con PDO
+
+
+
+
