@@ -3,6 +3,7 @@
     require_once('login.php');
 
     $nombre = "";
+    $nombre_msg = "";
     $minimo = "";
     $recomendado = "";
     $beneficios = "";
@@ -29,7 +30,7 @@
 
     function vitaminer_pide_datos($msge = "") {
 
-        global $nombre, $minimo, $recomendado;
+        global $nombre, $nombre_msg, $minimo, $recomendado;
         global $beneficios, $alimentos, $notas;
 
         print("<div class='wrap'>");
@@ -37,20 +38,29 @@
         print('<h2>Introducción de datos de vitaminas y minerales</h2>');
         print('<form name="vitaminer_form" method="post" action=' . $_SERVER['REQUEST_URI'] . '>');
         print('<input type="hidden" name="vitaminer_hidden" value="Y">');
-        print('Vitamina o mineral: <input type="text" name="nombre" size="20"><br />');
-        print('Cantidad mínima: <input type="text" name="minimo" size="20"><br />');
-        print('Cantidad recomendada: <input type="text" name="recomendado" size="20"><br />');
-        print('Beneficios: <input type="text" name="beneficios" size="80"><br />');
-        print('Alimentos: <input type="text" name="alimentos" size="80"><br />');
-        print('Notas: <input type="text" name="notas" size="80"><br />');
+        print('Vitamina o mineral: <input type="text" name="nombre" value="'.$nombre.'" size="20"><span style="color:#ff0000">'.$nombre_msg.'</span><br />');
+        print('Cantidad mínima: <input type="text" name="minimo" value="'.$minimo.'" size="20"><br />');
+        print('Cantidad recomendada: <input type="text" name="recomendado" value="'.$recomendado.'" size="20"><br />');
+        print('Beneficios: <input type="text" name="beneficios" value="'.$beneficios.'" size="80"><br />');
+        print('Alimentos: <input type="text" name="alimentos" value="'.$alimentos.'" size="80"><br />');
+        print('Notas: <input type="text" name="notas"  value="'.$notas.'"size="80"><br />');
+        print('<br />');
         print('<input type="submit" value="Grabar" style="color:#ff0000">');
         print('</form>');
         print('</div>');
     }
 
     function comprueba_datos() {
+
+        global $nombre, $nombre_msg, $minimo, $recomendado;
+        global $beneficios, $alimentos, $notas;
+        $nombre_msg = "";
         $nombre = $_POST['nombre'];
-        if (!$nombre) return "ERROR: Nombre sin rellenar";
+        //~ if (!$nombre) return "ERROR: Nombre sin rellenar";
+        if (!$nombre) {
+            $nombre_msg = "_HAY QUE RELLENAR EL NOMBRE_";
+            return;
+        }
         if (existe_nombre($nombre)) {
             $respuesta = cancelar_o_sustituir();
         }
@@ -66,10 +76,16 @@
     }
 
     function vitaminer_graba_datos() {
+
+        global $nombre, $minimo, $recomendado;
+        global $beneficios, $alimentos, $notas;
+
         //~ $connection = new mysqli($db_hostname, $db_username, $db_password, $db_database);
         $connection = new mysqli('sql303.260mb.com', 'pacus_6818312', 'des2mree', 'pacus_6818312_vitaminer');
         if ($connection->connect_error) die($connection->connect_error);
         //~ mysql_select_db($db_database) or die("No puedo seleccionar la BD: " . mysql_error());
     }
+
+//http://antovar.260mb.com/wp1/wp-admin/reauth=1
 
 /*EOF*/
