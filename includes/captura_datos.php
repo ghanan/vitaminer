@@ -2,6 +2,10 @@
 
     require_once('login.php');
 
+    define("VACIO", "nombre_vacio");
+    define("REPE", "nombre_repetido");
+    define("EXISTE", "nombre_ya_existe");
+
     $nombre = "";
     $nombre_msg = "";
     $minimo = "";
@@ -12,29 +16,34 @@
 
     function vitaminer_captura_datos() {
 
-        global $nombre, $minimo, $recomendado;
+        global $nombre, $nombre_msg, $minimo, $recomendado;
         global $beneficios, $alimentos, $notas;
 
+        $nombre_msg = "";
+
         if($_POST['vitaminer_hidden'] == 'Y') {
-            $resultado = comprueba_datos();
+            $resultado = lee_comprueba_datos();
             if ($resultado === true) {
                 print('Correcto');
                 //~ vitaminer_graba_datos();
-            } else {
-                vitaminer_pide_datos($resultado);
+            } elseif ($resultado == VACIO) {
+                $nombre_msg = "_HAY QUE RELLENAR EL NOMBRE_";
+                vitaminer_pide_datos();
+            } elseif ($resultado == REPE) {
+                vitaminer_pide_datos(EXISTE);
             }
         } else {
             vitaminer_pide_datos();
         }
     }
 
-    function vitaminer_pide_datos($msge = "") {
+    function vitaminer_pide_datos($existe = false) {
 
         global $nombre, $nombre_msg, $minimo, $recomendado;
         global $beneficios, $alimentos, $notas;
 
         print("<div class='wrap'>");
-        print($msge);
+        //~ print('<br />'.$msge.'<br />');
         print('<h2>Introducción de datos de vitaminas y minerales</h2>');
         print('<form name="vitaminer_form" method="post" action=' . $_SERVER['REQUEST_URI'] . '>');
         print('<input type="hidden" name="vitaminer_hidden" value="Y">');
@@ -45,26 +54,35 @@
         print('Alimentos: <input type="text" name="alimentos" value="'.$alimentos.'" size="80"><br />');
         print('Notas: <input type="text" name="notas"  value="'.$notas.'"size="80"><br />');
         print('<br />');
-        print('<input type="submit" value="Grabar" style="color:#ff0000">');
+        if (!$existe) {
+            print('<input type="submit" value="Grabar" style="color:#ff0000">');
+        } else {
+            print('Ya existe un registro con ese nombre, elija opción:<br />');
+            print('<input type="radio" id="sobre" name="sobre_cancela" value="sobre">');
+            print('<label for="sobre">Sobre-escribir</label><br />');
+            print('<input type="radio" id="cancela" name="sobre_cancela" value="cancel">');
+            print('<label for="cancela">Cancelar</label><br />');
+            print('<br /><input type="submit" value="Aceptar" style="color:#ff0000">');
+        }
         print('</form>');
         print('</div>');
     }
 
-    function comprueba_datos() {
+    function lee_comprueba_datos() {
 
         global $nombre, $nombre_msg, $minimo, $recomendado;
         global $beneficios, $alimentos, $notas;
-        $nombre_msg = "";
+
         $nombre = $_POST['nombre'];
-        //~ if (!$nombre) return "ERROR: Nombre sin rellenar";
-        if (!$nombre) {
-            $nombre_msg = "_HAY QUE RELLENAR EL NOMBRE_";
-            return;
-        }
-        if (existe_nombre($nombre)) {
-            $respuesta = cancelar_o_sustituir();
-        }
-        return true;
+        $minimo = $_POST['minimo'];
+        $recomendado = $_POST['recomendado'];
+        $beneficios = $_POST['beneficios'];
+        $alimentos = $_POST['alimentos'];
+        $notas = $_POST['notas'];
+
+        if (!$nombre) { return VACIO; };
+        if (existe_nombre($nombre)) { return REPE; };
+        return REPE;
     }
 
     function existe_nombre($nombre) {
