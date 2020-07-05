@@ -11,13 +11,14 @@
     $minimo = "";
     $recomendado = "";
     $beneficios = "";
-    $alimentos= "";
-    $notas= "";
+    $alimentos = "";
+    $notas = "";
+    $radio = "";
 
     function vitaminer_captura_datos() {
 
         global $nombre, $nombre_msg, $minimo, $recomendado;
-        global $beneficios, $alimentos, $notas;
+        global $beneficios, $alimentos, $notas; $radio;
 
         $nombre_msg = "";
 
@@ -30,7 +31,13 @@
                 $nombre_msg = "_HAY QUE RELLENAR EL NOMBRE_";
                 vitaminer_pide_datos();
             } elseif ($resultado == REPE) {
-                vitaminer_pide_datos(EXISTE);
+                if ($radio == "sobre") {
+                    vitaminer_pide_datos(EXISTE);
+                } elseif ($radio == "cancela") {
+                    print("<br /><br /><h1>Cancelado</h1>");
+                } else {
+                    vitaminer_pide_datos();
+                }
             }
         } else {
             vitaminer_pide_datos();
@@ -54,13 +61,13 @@
         print('Alimentos: <input type="text" name="alimentos" value="'.$alimentos.'" size="80"><br />');
         print('Notas: <input type="text" name="notas"  value="'.$notas.'"size="80"><br />');
         print('<br />');
-        if (!$existe) {
+        if ($existe === false) {
             print('<input type="submit" value="Grabar" style="color:#ff0000">');
         } else {
             print('Ya existe un registro con ese nombre, elija opción:<br />');
             print('<input type="radio" id="sobre" name="sobre_cancela" value="sobre">');
             print('<label for="sobre">Sobre-escribir</label><br />');
-            print('<input type="radio" id="cancela" name="sobre_cancela" value="cancel">');
+            print('<input type="radio" id="cancela" name="sobre_cancela" value="cancela">');
             print('<label for="cancela">Cancelar</label><br />');
             print('<br /><input type="submit" value="Aceptar" style="color:#ff0000">');
         }
@@ -71,7 +78,7 @@
     function lee_comprueba_datos() {
 
         global $nombre, $nombre_msg, $minimo, $recomendado;
-        global $beneficios, $alimentos, $notas;
+        global $beneficios, $alimentos, $notas; $radio;
 
         $nombre = $_POST['nombre'];
         $minimo = $_POST['minimo'];
@@ -79,6 +86,7 @@
         $beneficios = $_POST['beneficios'];
         $alimentos = $_POST['alimentos'];
         $notas = $_POST['notas'];
+        $radio = $_POST['sobre_cancela'];
 
         if (!$nombre) { return VACIO; };
         if (existe_nombre($nombre)) { return REPE; };
