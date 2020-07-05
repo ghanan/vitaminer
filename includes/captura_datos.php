@@ -50,7 +50,7 @@
         global $beneficios, $alimentos, $notas;
 
         print("<div class='wrap'>");
-        //~ print('<br />'.$msge.'<br />');
+        print('<br />'.$existe.'<br />');
         print('<h2>Introducción de datos de vitaminas y minerales</h2>');
         print('<form name="vitaminer_form" method="post" action=' . $_SERVER['REQUEST_URI'] . '>');
         print('<input type="hidden" name="vitaminer_hidden" value="Y">');
