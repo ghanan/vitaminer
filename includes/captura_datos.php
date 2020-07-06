@@ -18,7 +18,7 @@
     function vitaminer_captura_datos() {
 
         global $nombre, $nombre_msg, $minimo, $recomendado;
-        global $beneficios, $alimentos, $notas; $radio;
+        global $beneficios, $alimentos, $notas, $radio;
 
         $nombre_msg = "";
 
@@ -31,12 +31,12 @@
                 $nombre_msg = "_HAY QUE RELLENAR EL NOMBRE_";
                 vitaminer_pide_datos();
             } elseif ($resultado == REPE) {
-                if ($radio == "sobre") {
-                    vitaminer_pide_datos(EXISTE);
-                } elseif ($radio == "cancela") {
+                if ($radio === "sobre") {
+                    print('sobre-escribir');
+                } elseif ($radio === "cancela") {
                     print("<br /><br /><h1>Cancelado</h1>");
                 } else {
-                    vitaminer_pide_datos();
+                    vitaminer_pide_datos(EXISTE);
                 }
             }
         } else {
@@ -50,7 +50,6 @@
         global $beneficios, $alimentos, $notas;
 
         print("<div class='wrap'>");
-        print('<br />'.$existe.'<br />');
         print('<h2>Introducción de datos de vitaminas y minerales</h2>');
         print('<form name="vitaminer_form" method="post" action=' . $_SERVER['REQUEST_URI'] . '>');
         print('<input type="hidden" name="vitaminer_hidden" value="Y">');
@@ -78,23 +77,23 @@
     function lee_comprueba_datos() {
 
         global $nombre, $nombre_msg, $minimo, $recomendado;
-        global $beneficios, $alimentos, $notas; $radio;
+        global $beneficios, $alimentos, $notas, $radio;
 
         $nombre = $_POST['nombre'];
         $minimo = $_POST['minimo'];
-        $recomendado = $_POST['recomendado'];
         $beneficios = $_POST['beneficios'];
+        $recomendado = $_POST['recomendado'];
         $alimentos = $_POST['alimentos'];
         $notas = $_POST['notas'];
         $radio = $_POST['sobre_cancela'];
 
-        if (!$nombre) { return VACIO; };
-        if (existe_nombre($nombre)) { return REPE; };
-        return REPE;
+        if (!$nombre) return VACIO;
+        if (existe_nombre($nombre)) return REPE;
+        return true;
     }
 
     function existe_nombre($nombre) {
-        return false;
+        return true;
     }
 
     function cancelar_o_sustituir() {
