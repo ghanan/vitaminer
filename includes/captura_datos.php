@@ -25,8 +25,8 @@
         if($_POST['vitaminer_hidden'] == 'Y') {
             $resultado = lee_comprueba_datos();
             if ($resultado === true) {
-                print('Correcto');
-                //~ vitaminer_graba_datos();
+                //~ print('Correcto');
+                vitaminer_graba_datos();
             } elseif ($resultado == VACIO) {
                 $nombre_msg = "_HAY QUE RELLENAR EL NOMBRE_";
                 vitaminer_pide_datos();
@@ -93,22 +93,48 @@
     }
 
     function existe_nombre($nombre) {
-        return true;
-    }
+        global $nombre;
 
-    function cancelar_o_sustituir() {
-        return "cancelar";
+        $conn = vitaminer_db('abrir');
+        $res = $conn->query('SELECT * FROM elemento WHERE nombre = '.$nombre);
+        if ($res->num_rows > 0) return true;
+        return false;
     }
 
     function vitaminer_graba_datos() {
-
         global $nombre, $minimo, $recomendado;
         global $beneficios, $alimentos, $notas;
 
-        //~ $connection = new mysqli($db_hostname, $db_username, $db_password, $db_database);
-        $connection = new mysqli('sql303.260mb.com', 'pacus_6818312', 'des2mree', 'pacus_6818312_vitaminer');
-        if ($connection->connect_error) die($connection->connect_error);
-        //~ mysql_select_db($db_database) or die("No puedo seleccionar la BD: " . mysql_error());
+        $conn = vitaminer_db('abrir');
+        $sen = $conn->prepare("INSERT INTO elemento VALUES (?, ?, ?, ?)");
+        $sen->bind_param('ssssss', $nom, $min, $rec, $benef, $alim, $not);
+        $nom = $nombre;
+        $min = $minimo;
+        $rec = $recomendado;
+        $benef = $beneficios;
+        $alim = $alimentos;
+        $not = $notas;
+        $sen->execute();
+        $sen->close();
+        vitaminer_db('cerrar');
+    }
+
+    function vitaminer_db($accion) {
+
+        static $conectado;
+        static $connection;
+        global $nombre, $minimo, $recomendado;
+        global $beneficios, $alimentos, $notas;
+
+        if ($accion == 'abrir') {
+            if ($conectado === true) return $connection;
+            $connection = new mysqli('sql303.260mb.com', 'pacus_6818312', 'des2mree', 'pacus_6818312_vitaminer');
+            if ($connection->connect_error) die('Falló la conexión a MySQL: '.$connection->connect_error);
+            $conectado = true;
+            return $connection;
+        } else {
+            $connection->close();
+        }
     }
 
 //http://antovar.260mb.com/wp1/wp-admin/reauth=1
