@@ -32,7 +32,7 @@
                 vitaminer_pide_datos();
             } elseif ($resultado == REPE) {
                 if ($radio === "sobre") {
-                    print('sobre-escribir');
+                    vitaminer_graba_datos('reemplaza');
                 } elseif ($radio === "cancela") {
                     print("<br /><br /><h1>Cancelado</h1>");
                 } else {
@@ -96,18 +96,28 @@
         global $nombre;
 
         $conn = vitaminer_db('abrir');
-        $res = $conn->query('SELECT * FROM elemento WHERE nombre = '.$nombre);
+        $preg='SELECT * FROM elemento WHERE nombre = "'.$nombre.'"';
+        $res = $conn->query($preg);
         if ($res->num_rows > 0) return true;
         return false;
     }
 
-    function vitaminer_graba_datos() {
+    function vitaminer_graba_datos($modo = '') {
         global $nombre, $minimo, $recomendado;
         global $beneficios, $alimentos, $notas;
 
         $conn = vitaminer_db('abrir');
-        $sen = $conn->prepare("INSERT INTO elemento VALUES (?, ?, ?, ?)");
-        $sen->bind_param('ssssss', $nom, $min, $rec, $benef, $alim, $not);
+        if ($modo == 'reemplaza') {
+            $sen = $conn->prepare('UPDATE elemento SET nombre=?, minimo=?, recomendado=?, beneficios=?, alimentos=?, notas=? WHERE nombre=?');
+            if ($sen === false) {
+                print($conn->error);
+                return;
+            }
+            $sen->bind_param('sssssss', $nom, $min, $rec, $benef, $alim, $not, $nom);
+        } else {
+            $sen = $conn->prepare("INSERT INTO elemento VALUES (?, ?, ?, ?, ?, ?)");
+            $sen->bind_param('ssssss', $nom, $min, $rec, $benef, $alim, $not);
+        }
         $nom = $nombre;
         $min = $minimo;
         $rec = $recomendado;
@@ -116,6 +126,15 @@
         $not = $notas;
         $sen->execute();
         $sen->close();
+        vitaminer_db('cerrar');
+    }
+
+    function vitaminer_reemplaza_datos() {
+        global $nombre, $minimo, $recomendado;
+        global $beneficios, $alimentos, $notas;
+
+        $conn = vitaminer_db('abrir');
+
         vitaminer_db('cerrar');
     }
 
